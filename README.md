@@ -110,7 +110,7 @@
 
 <details> 
            
-#  <summary> Переделанный spec файл </summary>
+  <summary> Переделанный spec файл </summary>
            
            #
             %define nginx_home %{_localstatedir}/cache/nginx
@@ -465,7 +465,10 @@
             
 Устанавливаем nginx в систему:
 
+<details>
 
+<summary> Установка nginx-a в систему </summary>
+    
             [root@gpt-lvm ~]# yum localinstall rpmbuild/RPMS/x86_64/nginx-1.18.0-2.el7.ngx.x86_64.rpm  -y
             
             Loaded plugins: fastestmirror
@@ -498,9 +501,13 @@
             nginx.x86_64 1:1.18.0-2.el7.ngx
 
             Complete!
-
+</details>
             
 Проверка старта сервиса с помощью systemd:
+
+<details>
+
+<summary> Проверка старта сервиса </summary>
 
             [root@gpt-lvm ~]# systemctl start nginx
             
@@ -522,7 +529,7 @@
             
             nginx     19357         root    6u     IPv4              49047       0t0        TCP *:http (LISTEN)
             nginx     19358        nginx    6u     IPv4              49047       0t0        TCP *:http (LISTEN)
-            
+</details>         
             
             
             
