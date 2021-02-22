@@ -110,7 +110,7 @@
 
 <details>
            
-  <summary> Переработанный spec файл </summary>
+#    <summary> Переделанный spec файл </summary>
            
            #
             %define nginx_home %{_localstatedir}/cache/nginx
