@@ -108,7 +108,7 @@
 
 полный вид nginx.spec:
 
-<details>
+<details> Переделанный spec файл
            
 #    <summary> Переделанный spec файл </summary>
            
