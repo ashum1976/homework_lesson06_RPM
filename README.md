@@ -108,9 +108,9 @@
 
 полный вид nginx.spec:
 
-<details> Переделанный spec файл
+<details> 
            
-#    <summary> Переделанный spec файл </summary>
+#  <summary> Переделанный spec файл </summary>
            
            #
             %define nginx_home %{_localstatedir}/cache/nginx
