@@ -47,8 +47,8 @@ BuildRequires: systemd
 
 # end of distribution specific definitions
 
-%define main_version 1.18.0
-%define main_release 2%{?dist}.ngx
+%define main_version 1.14.1
+%define main_release 1%{?dist}.ngx
 
 %define bdir %{_builddir}/%{name}-%{main_version}
 
@@ -105,7 +105,6 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
 
 %build
 ./configure %{BASE_CONFIGURE_ARGS} \
-    --with-cc=/usr/local/bin/gcc \
     --with-cc-opt="%{WITH_CC_OPT}" \
     --with-ld-opt="%{WITH_LD_OPT}" \
     --with-openssl=/root/openssl-1.1.1j
@@ -113,7 +112,6 @@ make %{?_smp_mflags}
 %{__mv} %{bdir}/objs/nginx \
     %{bdir}/objs/nginx-debug
 ./configure %{BASE_CONFIGURE_ARGS} \
-    --with-cc=/usr/local/bin/gcc \
     --with-cc-opt="%{WITH_CC_OPT}" \
     --with-ld-opt="%{WITH_LD_OPT}"
 make %{?_smp_mflags}

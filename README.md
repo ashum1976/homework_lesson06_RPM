@@ -1,23 +1,28 @@
 
 
-#                                                               Домашнее задание
+#                                                              1. Домашнее задание
 
 
 
-##                                          Сборка RPM
+##                                          1.1 Сборка RPM
 
 
 Для сборки RPM нужны пакеты:
 
-            rpmdevtools
-            rpm-build
-            
+            redhat-lsb-core 
+            wget 
+            rpmdevtools 
+            rpm-build 
+            createrepo 
+            yum-utils
+
+                       
         
 Команда rpmdev-setuptree создаёт в домашней папке пользователя, кто её запустил, каталог  rpmbuild с подкаталагами всей структуры для сборки пакетов.
 
             rpmdev-setuptree
             
-Для выполнения задачи, загрузим  SRPM пакет NGINX для дальнейшей работы над ним, соберем его с поддержкой openssl:
+Для выполнения задачи, загрузим  SRPM пакет NGINX для дальнейшей работы над ним, соберем этот пакет с поддержкой openssl:
 
             [root@gpt-lvm SOURCES]# wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.18.0-2.el7.ngx.src.rpm
             
@@ -28,7 +33,7 @@
             Length: 1055846 (1.0M) [application/x-redhat-package-manager]
             Saving to: ‘nginx-1.18.0-2.el7.ngx.src.rpm’
 
-            100%[====================================================================================================================================================================================================>] 1,055,846   6.17MB/s   in 0.2s
+            100%[===================================================================================================>] 1,055,846   6.17MB/s   in 0.2s
 
             2021-02-22 10:41:58 (6.17 MB/s) - ‘nginx-1.18.0-2.el7.ngx.src.rpm’ saved [1055846/1055846
 
@@ -531,5 +536,60 @@
             nginx     19358        nginx    6u     IPv4              49047       0t0        TCP *:http (LISTEN)
 </details>         
             
+#                                           1.2 Создание репозитория
+
+В каталоге /usr/share/nginx/html, создадим папку repo:
+
+            [root@gpt-lvm ~]# mkdir /usr/share/nginx/html/repo
+
+Туда скопируем собранный rpm:
+
+            [root@gpt-lvm ~]# cp ~/rpmbuild/RPMS/x86_64/nginx-1.18.0-2.el7.ngx.x86_64.rpm /usr/share/nginx/html/repo
             
+Инициализируем наш репозиторий:
+
+            [root@gpt-lvm ~]# createrepo /usr/share/nginx/html/repo/
+            Spawning worker 0 with 1 pkgs    <------ добавлен один пакет в репозиторий, при последующем добавлении новых пакетов, нужно инициализировать заново
+            Workers Finished
+            Saving Primary metadata
+            Saving file lists metadata
+            Saving other metadata
+            Generating sqlite DBs
+            Sqlite DBs complete
+          
+Добавим созданный репозиторий в /etc/yum.repos.d:
+
+
+            [root@gpt-lvm ~]# yum-config-manager --add-repo=http://localhost/repo/
             
+            Loaded plugins: fastestmirror
+            
+            adding repo from: http://localhost/repo/
+
+            [localhost_repo_]
+            name=added from: http://localhost/repo/
+            baseurl=http://localhost/repo/
+            enabled=1
+
+            
+Проверяем, что он появился в списке репозиториев:
+
+            [root@gpt-lvm ~]#  yum repolist enabled
+            
+            Loaded plugins: fastestmirror
+            Loading mirror speeds from cached hostfile
+            * base: mirror.datacenter.by
+            * elrepo: ftp.icm.edu.pl
+            * extras: mirror.datacenter.by
+            * updates: mirror.datacenter.by
+            localhost_repo_                                                            | 2.9 kB  00:00:00     
+            localhost_repo_/primary_db                                                 | 2.8 kB  00:00:00     
+           
+            repo id                                                                    repo name                                status
+           
+            base/7/x86_64                                                               CentOS-7 - Base                          10,072
+            elrepo                                                                      ELRepo.org Community Enterprise Linux Repository - el7      112
+            extras/7/x86_64                                                             CentOS-7 - Extras                          451
+            localhost_repo_                                                             added from: http://localhost/repo/         1              <------------ новый репозиторий
+            updates/7/x86_64                                                            CentOS-7 - Updates                        1,640
+            repolist: 12,276
