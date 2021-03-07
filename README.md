@@ -23,7 +23,7 @@
             rpmdev-setuptree
             
 Для выполнения задачи, загрузим  SRPM пакет NGINX для дальнейшей работы над ним, соберем этот пакет с поддержкой openssl:
-
+            
             [root@gpt-lvm SOURCES]# wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.18.0-2.el7.ngx.src.rpm
             
             --2021-02-22 10:41:58--  https://nginx.org/packages/centos/7/SRPMS/nginx-1.18.0-2.el7.ngx.src.rpm
@@ -37,12 +37,23 @@
 
             2021-02-22 10:41:58 (6.17 MB/s) - ‘nginx-1.18.0-2.el7.ngx.src.rpm’ saved [1055846/1055846
 
+*          или скачать исходник можно с помощью команды из пакета yum-utils:
+
+            yumdownloader --source <имя пакета>    <------ но скачается версия пакета актуальная в репозитории на данный момент (nginx-1.14)
+           
+           
+           
 Также нужно скачать и разархивировать последний исходники для openssl - он потребуется при сборке:
 
              [root@gpt-lvm ~]#  wget https://www.openssl.org/source/latest.tar.gz
              
              [root@gpt-lvm ~]# tar -xzf latest.tar.gz
 
+Установим src пакет, чтоб создать дерево сборки в каталоге пользователяЖ
+        
+            [root@gpt-lvm ~]#rpm -i /root/nginx-1.18.0-2.el7.ngx.src.rpm
+             
+             
 Заранее поставим все зависимости чтобы в процессе сборки не было ошибок:
              
              [root@gpt-lvm openssl-1.1.1j]# yum-builddep ~/rpmbuild/SPECS/nginx.spec
@@ -460,6 +471,12 @@
 
 </details>
 
+
+Собираем пакет RPM:
+
+             rpmbuild -bb rpmbuild/SPECS/nginx.spec        <----- собираем только бинарный пакет ( -bb), можно собрать src пакет ( -bs ), или сразу оба пакета ( -ba)
+
+
 После успешной сборки получаем готовы файл для установки в систему:
 
 
@@ -530,7 +547,7 @@
                     ├─19357 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf
                     └─19358 nginx: worker process
             
-            [root@gpt-lvm ~]# lsof -n | grep nginx | grep LISTEN     <---- или так посмотерть запущен сервис или нет
+            [root@gpt-lvm ~]# lsof -nP | grep nginx | grep LISTEN     <---- или так посмотерть запущен сервис или нет
             
             nginx     19357         root    6u     IPv4              49047       0t0        TCP *:http (LISTEN)
             nginx     19358        nginx    6u     IPv4              49047       0t0        TCP *:http (LISTEN)
